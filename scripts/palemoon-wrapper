@@ -1,4 +1,5 @@
 #!/bin/bash
+# Based on https://github.com/mdouchement/docker-zoom-us
 
 PATH=/usr/sbin:/usr/bin:/sbin:/bin
 PALEMOON_USER=palemoon
@@ -52,6 +53,7 @@ prepare_docker_volume_parameters() {
   touch ${XAUTH}
   xauth nlist :0 | sed -e 's/^..../ffff/' | xauth -f ${XAUTH} nmerge -
 
+  VOLUMES+=" --volume=${HOME}/.config/pulse/cookie:/home/${PALEMOON_USER}/.config/pulse/cookie"
   VOLUMES+=" --volume=${HOME}/.moonchildproductions:/home/${PALEMOON_USER}/.moonchildproductions"
   VOLUMES+=" --volume=${DOWNLOAD_DIR}:/home/${PALEMOON_USER}/Downloads"
   VOLUMES+=" --volume=${XSOCK}:${XSOCK}"
@@ -83,6 +85,8 @@ prepare_docker_env_parameters
 prepare_docker_volume_parameters
 
 echo "Starting ${prog}..."
+PALEMOON_EXTRA_DOCKER_ARGUMENTS+=" --group-add $(getent group audio | cut -d: -f3) "
+
 ${SUDO} docker run -d \
   ${ENV_VARS} \
   ${VOLUMES} \

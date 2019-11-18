@@ -1,10 +1,10 @@
-# Palemoon browser in a Docker container
+# Pale Moon browser in a Docker container
 
 # Introduction
 
-`Dockerfile` to create a [Docker](https://www.docker.com/) container image with [Palemoon](https://www.palemoon.org) for Linux.
+`Dockerfile` to create a [Docker](https://www.docker.com/) container image with [Pale Moon](https://www.palemoon.org) for Linux.
 
-The image uses [X11](http://www.x.org) unix domain socket on the host.
+The image uses [X11](http://www.x.org) and [Pulseaudio](http://www.freedesktop.org/wiki/Software/PulseAudio/) unix domain sockets on the host to enable audio support in Pale Moon. These components are available out of the box on pretty much any modern linux distribution.
 
 # Getting started
 
@@ -34,18 +34,18 @@ This will install a wrapper script to launch `palemoon`.
 
 > **Note**
 >
-> If Palemoon is installed on the the host then the host binary is launched instead of starting a Docker container. To force the launch of Palemoon in a container use the `palemoon-wrapper` script. For example, `palemoon-wrapper palemoon` will launch Palemoon inside a Docker container regardless of whether it is installed on the host or not.
+> If Pale Moon is installed on the the host then the host binary is launched instead of starting a Docker container. To force the launch of Pale Moon in a container use the `palemoon-wrapper` script. For example, `palemoon-wrapper palemoon` will launch Pale Moon inside a Docker container regardless of whether it is installed on the host or not.
 
 ## How it works
 
-The wrapper scripts volume mount the X11 socket in the launcher container. The X11 socket allows for the user interface display on the host.
+The wrapper scripts volume mount the X11 and pulseaudio sockets in the launcher container. The X11 socket allows for the user interface display on the host, while the pulseaudio socket allows for the audio output to be rendered on the host.
 
-When the image is launched the following directories are mounted as volumes
+When the image is launched the following directories are mounted as volumes:
 
-- `${HOME}/'.moonchildproductions'
+- `${HOME}/'.moonchildproductions'`
 - `XDG_DOWNLOAD_DIR` or if it is missing `${HOME}/Downloads`
 
-This makes sure that your profile details are stored on the host and files received via Palemoon are available on your host in the appropriate download directory.
+This makes sure that your profile details are stored on the host and files received via Pale Moon are available on your host in the appropriate download directory.
 
 
 # Maintenance
@@ -85,5 +85,8 @@ docker exec -it palemoon-container-name bash
 ```
 
 # Credits
+
+This project is based on code and texts from:
+
 * [mdouchement/docker-zoom-us](https://github.com/mdouchement/docker-zoom-us)
 * [sameersbn/docker-skype](https://github.com/sameersbn/docker-skype)

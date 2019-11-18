@@ -3,7 +3,7 @@ FROM ubuntu:18.04
 
 RUN DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
-    && apt-get install -y gnupg sudo wget \
+    && apt-get install -y gnupg libpulse0 sudo wget \
     && echo 'deb http://download.opensuse.org/repositories/home:/stevenpusser/xUbuntu_18.04/ /' > /etc/apt/sources.list.d/home:stevenpusser.list \
     && wget -nv https://download.opensuse.org/repositories/home:/stevenpusser/xUbuntu_18.04/Release.key -O /tmp/Release.key \
     && apt-key add - < /tmp/Release.key \

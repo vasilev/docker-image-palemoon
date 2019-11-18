@@ -1,4 +1,5 @@
 #!/bin/bash
+# Based on https://github.com/mdouchement/docker-zoom-us
 set -e
 
 USER_UID=${USER_UID:-1000}
@@ -32,7 +33,7 @@ create_user() {
       --gecos 'Palemoon' ${PALEMOON_USER} >/dev/null 2>&1
   fi
   chown ${PALEMOON_USER}:${PALEMOON_USER} -R /home/${PALEMOON_USER}
-#  adduser ${PALEMOON_USER} sudo
+  adduser ${PALEMOON_USER} audio
 }
 
 launch_palemoon() {
