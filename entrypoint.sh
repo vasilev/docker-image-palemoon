@@ -6,6 +6,7 @@ USER_UID=${USER_UID:-1000}
 USER_GID=${USER_GID:-1000}
 
 PALEMOON_USER=palemoon
+PALEMOON_HOME=/home/${PALEMOON_USER}
 
 install_palemoon() {
   echo "Installing palemoon-wrapper..."
@@ -32,13 +33,20 @@ create_user() {
     adduser --disabled-login --uid ${USER_UID} --gid ${USER_GID} \
       --gecos 'Palemoon' ${PALEMOON_USER} >/dev/null 2>&1
   fi
-  chown ${PALEMOON_USER}:${PALEMOON_USER} -R /home/${PALEMOON_USER}
+
+  mkdir ${PALEMOON_HOME}/.cache
+  if [ ! -d ${PALEMOON_HOME}/.moonchildproductions/cache ]; then
+    mkdir ${PALEMOON_HOME}/.moonchildproductions/cache
+  fi
+
+  chown ${PALEMOON_USER}:${PALEMOON_USER} -R ${PALEMOON_HOME}
   adduser ${PALEMOON_USER} audio
 }
 
 launch_palemoon() {
-  cd /home/${PALEMOON_USER}
+  cd ${PALEMOON_HOME}
   ln -s .moonchildproductions '.moonchild productions'
+  ln -s ${PALEMOON_HOME}/.moonchildproductions/cache .cache/'moonchild productions'
   exec sudo -HEu ${PALEMOON_USER} PULSE_SERVER=/run/pulse/native QT_GRAPHICSSYSTEM="native" $@
 }
 
