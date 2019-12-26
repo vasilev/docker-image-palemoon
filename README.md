@@ -22,7 +22,7 @@ Alternatively you can build the image yourself.
 docker build -t vasilev/palemoon github.com/vasilev/docker-image-palemoon
 ```
 
-With the image locally available, install the wrapper scripts using:
+With the image locally available, install the wrapper scripts to launch `palemoon` using:
 
 ```bash
 docker run -it --rm \
@@ -30,11 +30,19 @@ docker run -it --rm \
   vasilev/palemoon:latest install
 ```
 
-This will install a wrapper script to launch `palemoon`.
+This will extract a wrapper scripts from the image and install them into your host system at `/usr/local/bin`.
+
+## Run Pale Moon
+
+After installation phase just run in your console:
+
+```bash
+palemoon
+```
 
 > **Note**
 >
-> If Pale Moon is installed on the the host then the host binary is launched instead of starting a Docker container. To force the launch of Pale Moon in a container use the `palemoon-wrapper` script. For example, `palemoon-wrapper palemoon` will launch Pale Moon inside a Docker container regardless of whether it is installed on the host or not.
+> If Pale Moon is installed on the host then the host binary is launched instead of starting a Docker container. To force the launch of Pale Moon in a container use the `palemoon-wrapper` script. For example, `palemoon-wrapper palemoon` will launch Pale Moon inside a Docker container regardless of whether it is installed on the host or not.
 
 ## How it works
 
