@@ -6,7 +6,7 @@ on:
       - v*
 
 jobs:
-  # Push image to GitHub Package Registry.
+  # Push image to Package Registries (GitHub and DockerHub).
   build-and-push:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
@@ -17,8 +17,10 @@ jobs:
       - name: Build the Docker image
         run: docker build . --file Dockerfile --tag vasilev/palemoon
 
-      - name: Log into registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+      - name: Log into registries
+        run: | 
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+          echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
       - name: Push image
         run: |
@@ -35,3 +37,5 @@ jobs:
 
           docker tag vasilev/palemoon $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
+          docker tag vasilev/palemoon vasilev/palemoon:$VERSION
+          docker push vasilev/palemoon:$VERSION
