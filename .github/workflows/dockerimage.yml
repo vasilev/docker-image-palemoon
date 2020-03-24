@@ -39,3 +39,4 @@ jobs:
           docker push $IMAGE_ID:$VERSION
           docker tag vasilev/palemoon vasilev/palemoon:$VERSION
           docker push vasilev/palemoon:$VERSION
+          docker push vasilev/palemoon:latest
