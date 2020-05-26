@@ -1,0 +1,12 @@
+FROM vasilev/palemoon:latest
+
+# Current version of libflashplayer.so requires libGL.so,
+# but flashplugin-installer package does not depend on libgl1 package,
+# so need to install libgl1 manually.
+
+RUN DEBIAN_FRONTEND=noninteractive \
+    && apt-get update \
+    && apt-get install -y libgl1 flashplugin-installer \
+    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+ENTRYPOINT ["/sbin/entrypoint.sh"]
