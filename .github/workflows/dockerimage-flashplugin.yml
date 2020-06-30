@@ -18,10 +18,10 @@ jobs:
           echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
       - name: Push image
         run: |
-          # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          # Strip "v" prefix from tag name
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          # Get the version from client payload
+          VERSION=${{ github.event.client_payload.version }}
+          # Use 'latest' if provided value is empty
+          : ${VERSION:='latest'}
           echo VERSION=$VERSION
           docker tag vasilev/palemoon vasilev/palemoon:$VERSION-flashplugin
           docker push vasilev/palemoon:$VERSION-flashplugin
