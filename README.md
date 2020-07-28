@@ -4,6 +4,8 @@
 
 `Dockerfile` to create a [Docker](https://www.docker.com/) container image with [Pale Moon](https://www.palemoon.org) for Linux.
 
+The aim of this project is to provide the ability to surf a little bit more "anonymously" than in a browser installed directly into the host system.
+
 The image uses [X11](http://www.x.org) and [Pulseaudio](http://www.freedesktop.org/wiki/Software/PulseAudio/) unix domain sockets on the host to enable audio support in Pale Moon. These components are available out of the box on pretty much any modern linux distribution.
 
 # Getting started
