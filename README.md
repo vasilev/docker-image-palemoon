@@ -34,6 +34,8 @@ docker run -it --rm \
 
 This will extract a wrapper scripts from the image and install them into your host system at `/usr/local/bin`.
 
+Alternatively just download the [wrapper script](https://raw.githubusercontent.com/vasilev/docker-image-palemoon/master/scripts/palemoon-wrapper) from GitHub, make it executable, and create a symlink "palemoon" pointing to that wrapper. 
+
 ## Run Pale Moon
 
 After installation phase just run in your console:
