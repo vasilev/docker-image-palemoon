@@ -1,0 +1,26 @@
+FROM vasilev/palemoon:latest AS builder
+
+RUN DEBIAN_FRONTEND=noninteractive \
+    && apt-get update \
+    && apt-get install -y git gcc nasm cmake libcurl4-gnutls-dev libsdl2-mixer-dev libsdl2-dev libpango1.0-dev libcairo2-dev libavcodec-dev libavresample-dev libglew-dev librtmp-dev libjpeg-dev libavformat-dev liblzma-dev \
+    && apt-get install -y browser-plugin-gnash libgl1 sudo \
+    && git clone --single-branch --depth 1 https://github.com/lightspark/lightspark.git \
+    && cd lightspark \
+    && ./build -d
+
+
+FROM vasilev/palemoon:latest
+
+COPY --from=builder /etc/xdg/lightspark.conf /etc/xdg/lightspark.conf
+COPY --from=builder /usr/local/lib/lightspark /usr/local/lib/lightspark
+COPY --from=builder /usr/local/lib/mozilla/plugins/liblightsparkplugin.so /usr/local/lib/mozilla/plugins/liblightsparkplugin.so
+
+RUN DEBIAN_FRONTEND=noninteractive \
+    && apt-get update \
+    && apt-get install -y libcurl4 libsdl2-mixer-2.0-0 libpango1.0 libcairo2 libavcodec57 libavresample3 libglew2.0 librtmp1 libjpeg8 libavformat57 liblzma5 \
+    && apt-get install -y browser-plugin-gnash libgl1 \
+    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && update-alternatives --install /usr/lib/mozilla/plugins/flashplugin-alternative.so mozilla-flashplugin /usr/local/lib/mozilla/plugins/liblightsparkplugin.so 80
+
+
+ENTRYPOINT ["/sbin/entrypoint.sh"]
