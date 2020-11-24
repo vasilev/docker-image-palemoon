@@ -6,7 +6,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     && apt-get install -y browser-plugin-gnash libgl1 sudo \
     && git clone --single-branch --depth 1 https://github.com/lightspark/lightspark.git \
     && cd lightspark \
-    && ./build -d
+    && ./build.sh -d
 
 
 FROM vasilev/palemoon:latest
