@@ -6,7 +6,7 @@ on:
       - v*
 
 jobs:
-  # Push image to Package Registries (GitHub and DockerHub).
+  # Push image to Package Registries (GitHub Packages, ghcr.io, and DockerHub).
   build-and-push:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
@@ -20,6 +20,7 @@ jobs:
       - name: Log into registries
         run: | 
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+          echo "${{ secrets.GHCR_PASSWORD }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
       - name: Push image
@@ -32,11 +33,18 @@ jobs:
           # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
 
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-
           docker tag vasilev/palemoon $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
-          docker tag vasilev/palemoon vasilev/palemoon:$VERSION
-          docker push vasilev/palemoon:$VERSION
-          docker push vasilev/palemoon:latest
+          
+          IMAGENAME='vasilev/palemoon'
+          for REPO in '' 'ghcr.io/'
+          do
+          REPO_IMAGENAME=$REPO$IMAGENAME
+          VERSIONED_IMAGENAME="$REPO_IMAGENAME:$VERSION"
+          echo VERSIONED_IMAGENAME=$VERSIONED_IMAGENAME
+          
+          docker tag $IMAGENAME $REPO_IMAGENAME
+          docker tag $IMAGENAME $VERSIONED_IMAGENAME
+          docker push $REPO_IMAGENAME:latest
+          docker push $VERSIONED_IMAGENAME
+          done
