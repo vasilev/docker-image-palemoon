@@ -1,0 +1,35 @@
+name: _Manually_ build Docker image for Pale Moon browser (GTK3 build)
+
+on:
+  repository_dispatch:
+    types: ['build-with-gtk3']
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile.gtk3 --tag vasilev/palemoon
+      - name: Log into registries
+        run: |
+          echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          echo "${{ secrets.GHCR_PASSWORD }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+           
+      - name: Push image
+        run: |
+          # Get the version from client payload
+          VERSION=${{ github.event.client_payload.version }}
+          # Use 'latest' if provided value is empty
+          : ${VERSION:='latest'}
+          TAGGED_IMAGENAME="vasilev/palemoon:$VERSION-gtk3-$(date -I)"
+          echo TAGGED_IMAGENAME=$TAGGED_IMAGENAME
+          docker tag vasilev/palemoon $TAGGED_IMAGENAME
+          docker push $TAGGED_IMAGENAME
+          IMAGE_ID="ghcr.io/$TAGGED_IMAGENAME"
+          echo IMAGE_ID=$IMAGE_ID
+          docker tag vasilev/palemoon $IMAGE_ID
+          docker push $IMAGE_ID
+          
